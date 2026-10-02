@@ -2,6 +2,7 @@ import { _defaults } from './defaults.ts';
 import {
   cleanUrl,
   decodeCharacterReferences,
+  escapeDisallowedTags,
   escapeHtmlEntities,
 } from './helpers.ts';
 import { other } from './rules.ts';
@@ -48,7 +49,8 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
   }
 
   html({ text }: Tokens.HTML | Tokens.Tag): RendererOutput {
-    return text as RendererOutput;
+    // GFM Disallowed Raw HTML extension: filter these tags when rendering.
+    return (this.options.gfm ? escapeDisallowedTags(text) : text) as RendererOutput;
   }
 
   def(token: Tokens.Def): RendererOutput {
