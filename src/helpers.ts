@@ -50,15 +50,16 @@ export function decodeNumericCharacterReferences(text: string) {
  * CommonMark 0.31.2 examples 32, 33 and 503. Plain text is intentionally
  * not decoded here: references there are left for the browser to resolve.
  *
- * Named references come from the full HTML5 table. Legacy references that
- * may appear without a trailing semicolon (e.g. `&amp`) are only decoded
- * when not followed by `=` or an ASCII alphanumeric, matching the HTML5
- * attribute-value rule.
+ * Named references come from the full HTML5 table. Per CommonMark 0.31.2
+ * section 2.5 the trailing semicolon is required for every reference: one
+ * without it (e.g. `&copy`) is left as-is, so query strings such as
+ * `?a=1&not` are not corrupted. The semicolon is consumed for all three
+ * reference kinds, so `&#246;` decodes to `\u00f6` rather than `\u00f6;`.
  */
-const characterReference = /&(?:#([0-9]{1,7})|#[Xx]([A-Fa-f0-9]{1,6})|([A-Za-z][A-Za-z0-9]*)(;?))/g;
+const characterReference = /&(?:#([0-9]{1,7})|#[Xx]([A-Fa-f0-9]{1,6})|([A-Za-z][A-Za-z0-9]*));/g;
 
 export function decodeCharacterReferences(text: string) {
-  return text.replace(characterReference, (match: string, dec: string, hex: string, name: string, semi: string, offset: number, str: string) => {
+  return text.replace(characterReference, (match: string, dec: string, hex: string, name: string) => {
     if (dec !== undefined || hex !== undefined) {
       const code = dec === undefined ? Number.parseInt(hex, 16) : Number.parseInt(dec, 10);
       if (code === 0 || code > 0x10ffff || (code >= 0xd800 && code <= 0xdfff)) {
@@ -66,20 +67,8 @@ export function decodeCharacterReferences(text: string) {
       }
       return String.fromCodePoint(code);
     }
-    const value = getNamedCharacterReference(semi ? name + ';' : name);
-    if (value === undefined) {
-      return match;
-    }
-    if (!semi) {
-      const next = str.charCodeAt(offset + match.length);
-      if (next === 61 // =
-        || (next >= 48 && next <= 57) // 0-9
-        || (next >= 65 && next <= 90) // A-Z
-        || (next >= 97 && next <= 122)) { // a-z
-        return match;
-      }
-    }
-    return value;
+    const value = getNamedCharacterReference(name + ';');
+    return value === undefined ? match : value;
   });
 }
 
