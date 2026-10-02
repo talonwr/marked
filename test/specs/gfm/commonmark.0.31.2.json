@@ -253,8 +253,7 @@
     "example": 32,
     "start_line": 735,
     "end_line": 739,
-    "section": "Entity and numeric character references",
-    "shouldFail": true
+    "section": "Entity and numeric character references"
   },
   {
     "markdown": "[foo]\n\n[foo]: /f&ouml;&ouml; \"f&ouml;&ouml;\"\n",
@@ -262,8 +261,7 @@
     "example": 33,
     "start_line": 742,
     "end_line": 748,
-    "section": "Entity and numeric character references",
-    "shouldFail": true
+    "section": "Entity and numeric character references"
   },
   {
     "markdown": "``` f&ouml;&ouml;\nfoo\n```\n",
@@ -4023,8 +4021,7 @@
     "example": 503,
     "start_line": 7731,
     "end_line": 7735,
-    "section": "Links",
-    "shouldFail": true
+    "section": "Links"
   },
   {
     "markdown": "[link](\"title\")\n",

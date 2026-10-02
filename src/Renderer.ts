@@ -1,6 +1,7 @@
 import { _defaults } from './defaults.ts';
 import {
   cleanUrl,
+  decodeCharacterReferences,
   escapeHtmlEntities,
 } from './helpers.ts';
 import { other } from './rules.ts';
@@ -164,14 +165,17 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
     const parsedText = autolink
       ? escapeHtmlEntities(text, true)
       : this.parser.parseInline(tokens) as string;
-    const cleanHref = cleanUrl(href);
+    // Character references are decoded before percent-encoding
+    // (CommonMark 0.31.2 examples 32, 33, 503). Autolink destinations are
+    // literal: references are not resolved inside an autolink.
+    const cleanHref = cleanUrl(autolink ? href : decodeCharacterReferences(href));
     if (cleanHref === null) {
       return parsedText as RendererOutput;
     }
     href = escapeHtmlEntities(cleanHref, autolink);
     let out = '<a href="' + href + '"';
     if (title) {
-      out += ' title="' + (escapeHtmlEntities(title)) + '"';
+      out += ' title="' + (escapeHtmlEntities(decodeCharacterReferences(title))) + '"';
     }
     out += '>' + parsedText + '</a>';
     return out as RendererOutput;
@@ -181,7 +185,7 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
     if (tokens) {
       text = this.parser.parseInline(tokens, this.parser.textRenderer) as string;
     }
-    const cleanHref = cleanUrl(href);
+    const cleanHref = cleanUrl(decodeCharacterReferences(href));
     if (cleanHref === null) {
       return escapeHtmlEntities(text) as RendererOutput;
     }
@@ -189,7 +193,7 @@ export class _Renderer<ParserOutput = string, RendererOutput = string> {
 
     let out = `<img src="${escapeHtmlEntities(href)}" alt="${escapeHtmlEntities(text)}"`;
     if (title) {
-      out += ` title="${escapeHtmlEntities(title)}"`;
+      out += ` title="${escapeHtmlEntities(decodeCharacterReferences(title))}"`;
     }
     out += '>';
     return out as RendererOutput;

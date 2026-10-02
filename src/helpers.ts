@@ -1,3 +1,4 @@
+import { getNamedCharacterReference } from './entities.ts';
 import { other } from './rules.ts';
 
 /**
@@ -38,6 +39,47 @@ export function decodeNumericCharacterReferences(text: string) {
       return '�';
     }
     return String.fromCodePoint(code);
+  });
+}
+
+/**
+ * Decodes numeric and named character references, e.g. `&#246;` and
+ * `&ouml;`, to the characters they name. Used for link destinations and
+ * titles, where CommonMark requires references to be resolved before the
+ * value is percent-encoded (destination) or HTML-escaped (title); see
+ * CommonMark 0.31.2 examples 32, 33 and 503. Plain text is intentionally
+ * not decoded here: references there are left for the browser to resolve.
+ *
+ * Named references come from the full HTML5 table. Legacy references that
+ * may appear without a trailing semicolon (e.g. `&amp`) are only decoded
+ * when not followed by `=` or an ASCII alphanumeric, matching the HTML5
+ * attribute-value rule.
+ */
+const characterReference = /&(?:#([0-9]{1,7})|#[Xx]([A-Fa-f0-9]{1,6})|([A-Za-z][A-Za-z0-9]*)(;?))/g;
+
+export function decodeCharacterReferences(text: string) {
+  return text.replace(characterReference, (match: string, dec: string, hex: string, name: string, semi: string, offset: number, str: string) => {
+    if (dec !== undefined || hex !== undefined) {
+      const code = dec === undefined ? Number.parseInt(hex, 16) : Number.parseInt(dec, 10);
+      if (code === 0 || code > 0x10ffff || (code >= 0xd800 && code <= 0xdfff)) {
+        return '\uFFFD';
+      }
+      return String.fromCodePoint(code);
+    }
+    const value = getNamedCharacterReference(semi ? name + ';' : name);
+    if (value === undefined) {
+      return match;
+    }
+    if (!semi) {
+      const next = str.charCodeAt(offset + match.length);
+      if (next === 61 // =
+        || (next >= 48 && next <= 57) // 0-9
+        || (next >= 65 && next <= 90) // A-Z
+        || (next >= 97 && next <= 122)) { // a-z
+        return match;
+      }
+    }
+    return value;
   });
 }
 
