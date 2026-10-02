@@ -28,6 +28,19 @@ export function escapeHtmlEntities(html: string, encode?: boolean) {
 }
 
 /**
+ * GFM Disallowed Raw HTML (extension): when rendering HTML output these tags
+ * are filtered by replacing the leading `<` with `&lt;`. Tag names match
+ * case-insensitively; names that merely start with a disallowed tag (e.g.
+ * `<titlex>` or `<title-foo>`) are not filtered. See the GFM spec section
+ * "Disallowed Raw HTML" (example 657).
+ */
+const disallowedTags = /<(\/?)(title|textarea|style|xmp|iframe|noembed|noframes|script|plaintext)(?=[\s/>])/gi;
+
+export function escapeDisallowedTags(html: string) {
+  return html.replace(disallowedTags, '&lt;$1$2');
+}
+
+/**
  * Numeric character references are recognized outside code and are equivalent to the
  * character they name. Values that are zero, out of range, or a surrogate become the
  * replacement character.

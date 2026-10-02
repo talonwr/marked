@@ -1357,7 +1357,8 @@
     "example": 170,
     "start_line": 2752,
     "end_line": 2766,
-    "section": "HTML blocks"
+    "section": "HTML blocks",
+    "shouldFail": true
   },
   {
     "markdown": "<textarea>\n\n*foo*\n\n_bar_\n\n</textarea>\n",
@@ -1365,7 +1366,8 @@
     "example": 171,
     "start_line": 2771,
     "end_line": 2787,
-    "section": "HTML blocks"
+    "section": "HTML blocks",
+    "shouldFail": true
   },
   {
     "markdown": "<style\n  type=\"text/css\">\nh1 {color:red;}\n\np {color:blue;}\n</style>\nokay\n",
@@ -1373,7 +1375,8 @@
     "example": 172,
     "start_line": 2791,
     "end_line": 2807,
-    "section": "HTML blocks"
+    "section": "HTML blocks",
+    "shouldFail": true
   },
   {
     "markdown": "<style\n  type=\"text/css\">\n\nfoo\n",
@@ -1381,7 +1384,8 @@
     "example": 173,
     "start_line": 2814,
     "end_line": 2824,
-    "section": "HTML blocks"
+    "section": "HTML blocks",
+    "shouldFail": true
   },
   {
     "markdown": "> <div>\n> foo\n\nbar\n",
@@ -1405,7 +1409,8 @@
     "example": 176,
     "start_line": 2856,
     "end_line": 2862,
-    "section": "HTML blocks"
+    "section": "HTML blocks",
+    "shouldFail": true
   },
   {
     "markdown": "<!-- foo -->*bar*\n*baz*\n",
@@ -1421,7 +1426,8 @@
     "example": 178,
     "start_line": 2877,
     "end_line": 2885,
-    "section": "HTML blocks"
+    "section": "HTML blocks",
+    "shouldFail": true
   },
   {
     "markdown": "<!-- Foo\n\nbar\n   baz -->\nokay\n",
