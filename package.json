@@ -30,11 +30,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/markedjs/marked.git"
+    "url": "git+https://github.com/talonwr/marked.git"
   },
   "homepage": "https://marked.js.org",
   "bugs": {
-    "url": "https://github.com/markedjs/marked/issues"
+    "url": "https://github.com/talonwr/marked/issues"
   },
   "license": "MIT",
   "keywords": [
