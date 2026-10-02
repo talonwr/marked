@@ -150,6 +150,12 @@ describe('bin/marked', () => {
       stdin: '# test\n',
       stdout: '<h1>test</h1>',
     }));
+
+    it('errors when more than one input file is provided', testInput({
+      args: [fixturePath('bin-input.md'), fixturePath('bin-input.md')],
+      stderr: 'marked: only one input file can be processed at a time',
+      code: 1,
+    }));
   });
 });
 
@@ -174,8 +180,3 @@ describe('exec', () => {
     stdout: '<h1>file</h1>',
   }));
 
-  it('input last file positional', execMarked({
-    args: `${fixturePath('does-not-exist.md')} ${fixturePath('bin-input.md')}`,
-    stdout: '<h1>file</h1>',
-  }));
-});

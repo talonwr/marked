@@ -159,6 +159,9 @@ export async function main(nodeProcess) {
       if (input) {
         return await readFile(input, 'utf8');
       }
+      if (files.length > 1) {
+        throw Error('marked: only one input file can be processed at a time');
+      }
       if (files.length > 0) {
         return await readFile(files.pop(), 'utf8');
       }
